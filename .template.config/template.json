@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Osmar Briones",
+  "classifications": [ "Harmony", "Unity", "BepInEx", "REPO" ],
+  "identity": "Repo.ModTemplate",
+  "name": "R.E.P.O. BepInEx Mod Template",
+  "shortName": "repo-mod",
+  "sourceName": "RepoModTemplate",
+  "preferNameDirectory": true,
+  
+  "defaultName": "MyREPOPlugin",
+  
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  
+  "primaryOutputs": [
+    { "path": "RepoModTemplate.csproj" }
+  ],
+
+  "symbols": {
+    "RepoRootPath": {
+      "type": "parameter",
+      "datatype": "text",
+      "description": "Path where REPO.exe lives",
+      "replaces": "REPO_ROOT_PATH",
+      "defaultValue": "C:\\Juegos\\REPO"
+    },
+    "AuthorId": {
+      "type": "parameter",
+      "datatype": "text",
+      "description": "Author ID for the GUID (e.g. com.osmarbriones)",
+      "replaces": "AUTHOR_ID",
+      "defaultValue": "com.example"
+    }
+  }
+}

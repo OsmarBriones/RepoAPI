@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json.schemastore.org/vs-2017.3.host",
+  "order": 0,
+  "icon": "icon.png",
+  "symbolInfo": [
+    {
+      "id": "RepoRootPath",
+      "name": {
+        "text": "Path where REPO.exe lives"
+      },
+      "isVisible": true
+    },
+    {
+      "id": "AuthorId",
+      "name": {
+        "text": "Author ID (e.g. com.johndoe)"
+      },
+      "isVisible": true
+    }
+  ]
+}
