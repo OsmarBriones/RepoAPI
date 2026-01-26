@@ -2,7 +2,6 @@
 
 namespace RepoAPI.Items
 {
-
 	public enum ItemName
 	{
 		[GameKey("Item Cart Cannon")]
@@ -156,8 +155,7 @@ namespace RepoAPI.Items
 		UpgradePlayerTumbleWings,
 
 		[GameKey("Item Valuable Tracker")]
-		ValuableTracker
+		ValuableTracker,
 	}
-
 }
 
