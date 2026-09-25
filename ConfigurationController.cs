@@ -3,12 +3,12 @@ using BepInEx.Configuration;
 
 namespace RepoAPI
 {
-    internal class ConfigurationController
+    public class ConfigurationController
     {
         private static ConfigFile ConfigFile { get; set; }
         private static ConfigEntry<bool> Enabled { get; set; }
 
-        internal static void Initialize(ConfigFile config)
+        public static void Initialize(ConfigFile config)
         {
             ConfigFile = config;
 
@@ -17,7 +17,7 @@ namespace RepoAPI
             ConfigFile.Save();
         }
 
-        internal static void Reload()
+        public static void Reload()
         {
             ConfigFile.Reload();
             ConfigFile.Save();

@@ -1,8 +1,0 @@
-{
-  "name": "RepoAPI",
-  "version_number": "1.0.0",
-  "description": "RepoAPI. Fully configurable. Only the host needs to have it.",
-  "dependencies": [
-	"BepInEx-BepInExPack-5.4.2304"
-  ]
-}

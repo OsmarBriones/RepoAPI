@@ -1,0 +1,61 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Shared TargetFramework/LangVersion/game paths come from Directory.Build.props -->
+  <PropertyGroup>
+    <RootNamespace>RepoAPI</RootNamespace>
+    <AssemblyName>RepoAPI</AssemblyName>
+  </PropertyGroup>
+
+  <!-- RepoAPI.Test lives inside this project's own folder; keep it out of RepoAPI's implicit glob -->
+  <ItemGroup>
+    <Compile Remove="RepoAPI.Test\**" />
+    <EmbeddedResource Remove="RepoAPI.Test\**" />
+    <None Remove="RepoAPI.Test\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="BepInEx">
+      <HintPath>$(RepoBepInExCore)\BepInEx.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+
+    <Reference Include="0Harmony">
+      <HintPath>$(RepoBepInExCore)\0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(RepoManaged)\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+	
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>$(RepoManaged)\Assembly-CSharp-firstpass.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+
+    <Reference Include="UnityEngine">
+      <HintPath>$(RepoManaged)\UnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(RepoManaged)\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+	
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>$(RepoManaged)\UnityEngine.PhysicsModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+	
+    <Reference Include="UnityEngine.UI">
+      <HintPath>$(RepoManaged)\UnityEngine.UI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+	
+    <Reference Include="PhotonUnityNetworking">
+      <HintPath>$(RepoManaged)\PhotonUnityNetworking.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+</Project>

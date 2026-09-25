@@ -1,4 +1,4 @@
 <Solution>
   <Project Path="RepoAPI.Test/RepoAPI.Test.csproj" Id="cee831e2-7170-44c9-a44f-2051d7177ee7" />
-  <Project Path="RepoAPI/RepoAPI.csproj" />
+  <Project Path="RepoAPI.csproj" />
 </Solution>
