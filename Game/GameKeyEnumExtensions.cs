@@ -1,4 +1,5 @@
-﻿using RepoAPI.Game;
+#nullable enable
+using RepoAPI.Game;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -29,7 +30,7 @@ public static class GameKeyEnumExtensions
 			}
 		}
 
-		result = default;
+		result = default!;
 		return false;
 	}
 

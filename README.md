@@ -6,7 +6,7 @@ Shared C# library for R.E.P.O. BepInEx mods: item lookup/spawning helpers, confi
 
 ## How mods consume this repo
 
-Each consuming mod adds this repository as a git submodule and references the project directly, so edits here are picked up immediately by a normal build (no manual DLL copying):
+Each consuming mod adds this repository as a git submodule, then compiles in only the source files it actually needs with `<Compile Include>` — not a project/assembly reference. There is no `RepoAPI.dll`: the code becomes part of the consuming mod's own DLL directly, and a normal rebuild picks up edits made here immediately (no manual DLL copying, no merge step).
 
 ```bash
 git submodule add https://github.com/OsmarBriones/RepoAPI.git external/RepoAPI
@@ -14,20 +14,30 @@ git submodule add https://github.com/OsmarBriones/RepoAPI.git external/RepoAPI
 
 ```xml
 <ItemGroup>
-  <ProjectReference Include="external/RepoAPI/RepoAPI.csproj" />
+  <Compile Remove="external\**" />
+  <EmbeddedResource Remove="external\**" />
+  <None Remove="external\**" />
+
+  <!-- pick only the module(s) you need, see "Contents" for the dependency graph -->
+  <Compile Include="external\RepoAPI\Items\**\*.cs" />
+  <Compile Include="external\RepoAPI\Game\**\*.cs" />
 </ItemGroup>
 ```
 
-At publish time, the consuming mod's Release build merges `RepoAPI.dll` into its own DLL with ILRepack (`Internalize="true"`), so the shipped artifact is a single file with no separate RepoAPI dependency. See `METHODOLOGY.md` in the workspace root for the full convention.
+See `METHODOLOGY.md` in the workspace root for the full convention, and `EnemyDrops/CLAUDE.md` for a real example that includes only `Items/ItemProvider.cs` + `Items/ItemKeysProvider.cs` + `Items/ItemName.cs` + `Game/**` (not the whole `Items/` folder, since `Item.cs`/`ItemNames.cs` pull in `Utils/` and aren't needed there).
 
 ## Contents
 
-- `Items/` — item key lookup and weighted random selection (`ItemProvider`, `ItemKeysProvider`).
-- `Game/` — reflection/enum helpers for reading game-side data.
-- `ModConfig/` — generic config binding helpers.
-- `Utils/` — small shared utilities.
-- `ConfigurationController` — minimal config init/reload helper; call `ConfigurationController.Initialize(this.Config)` from the consuming mod's `Awake()`.
-- `Patches/ReloadOnLevelStart` — Harmony patch on `EnemyDirector.Start` that reloads config at level start; picked up automatically by the consuming mod's `Harmony.PatchAll()`.
+Modules are folders. Some depend on others — the compiler will error clearly on a missing type if you forget to include a dependency:
+
+| Module | Provides | Depends on |
+|---|---|---|
+| `Items/` | `ItemProvider` (spawning), `ItemKeysProvider` (uniform/weighted random key selection), `ItemName` enum, `Item` | `Game/` |
+| `Game/` | `GameKeyAttribute`, `GameKeyEnumExtensions` — reflection helpers mapping enum members to game key strings | — |
+| `ModConfig/` | Generic config binding helpers | `Items/` (→ `Game/`) |
+| `Utils/` | Small shared utilities (`EnumUtils`) | — |
+| `ConfigurationController` (repo root) | Minimal config init/reload helper; call `Initialize(this.Config)` from the consuming mod's `Awake()` | — |
+| `Patches/ReloadOnLevelStart` | Harmony patch on `EnemyDirector.Start` that reloads config at level start; picked up automatically by the consuming mod's `Harmony.PatchAll()` | `ConfigurationController` |
 
 ## Tests
 

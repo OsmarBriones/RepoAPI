@@ -1,3 +1,4 @@
+#nullable enable
 using Photon.Pun;
 using System;
 using UnityEngine;
@@ -12,26 +13,26 @@ namespace RepoAPI.Items
 		/// <summary>
 		/// Attempts to spawn a random item at the given position (delegates to TrySpawnByKey).
 		/// </summary>
-		public static bool TrySpawnRandomItem(Vector3 position, Quaternion rotation, out GameObject spawned, float upwardOffset = 0.15f)
+		public static bool TrySpawnRandomItem(Vector3 position, Quaternion rotation, out GameObject? spawned, float upwardOffset = 0.15f)
 		{
 			spawned = null;
 
-			string key = ItemKeysProvider.GetRandomKey();
+			string? key = ItemKeysProvider.GetRandomKey();
 			if (string.IsNullOrEmpty(key))
 			{
 				return false;
 			}
 
-			return TrySpawnByKey(key, position, rotation, out spawned, upwardOffset);
+			return TrySpawnByKey(key!, position, rotation, out spawned, upwardOffset);
 		}
 
 		/// <summary>
 		/// Attempts to spawn a specific item by dictionary key.
 		/// </summary>
-		public static bool TrySpawnByKey(string key, Vector3 position, Quaternion rotation, out GameObject spawned, float upwardOffset = 0.15f)
+		public static bool TrySpawnByKey(string key, Vector3 position, Quaternion rotation, out GameObject? spawned, float upwardOffset = 0.15f)
 		{
 			spawned = null;
-			if(!SemiFunc.IsMasterClientOrSingleplayer()) return false;
+			if (!SemiFunc.IsMasterClientOrSingleplayer()) return false;
 
 			var dict = StatsManager.instance.itemDictionary;
 
@@ -61,7 +62,7 @@ namespace RepoAPI.Items
 			return true;
 		}
 
-		private static void ApplySpawnImpulse(GameObject go)
+		private static void ApplySpawnImpulse(GameObject? go)
 		{
 			if (!go) return;
 			if (go.TryGetComponent<Rigidbody>(out var rb))
