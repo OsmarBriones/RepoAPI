@@ -64,7 +64,7 @@ namespace RepoAPI.Items
 
 		private static void ApplySpawnImpulse(GameObject? go)
 		{
-			if (!go) return;
+			if (go is null || !go) return;
 			if (go.TryGetComponent<Rigidbody>(out var rb))
 			{
 				rb.AddForce(UnityEngine.Random.insideUnitSphere * 1.25f + Vector3.up * 2f, ForceMode.Impulse);
