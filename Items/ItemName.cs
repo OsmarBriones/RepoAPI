@@ -1,4 +1,4 @@
-﻿using RepoAPI.Game;
+using RepoAPI.Game;
 
 namespace RepoAPI.Items
 {
@@ -112,11 +112,35 @@ namespace RepoAPI.Items
 		[GameKey("Item Phase Bridge")]
 		PhaseBridge,
 
+		[GameKey("Item Leaf Blower")]
+		LeafBlower,
+
 		[GameKey("Item Power Crystal")]
 		PowerCrystal,
 
+		[GameKey("Item ReviveItem")]
+		ReviveItem,
+
 		[GameKey("Item Rubber Duck")]
 		RubberDuck,
+
+		[GameKey("Item Staff Torque")]
+		StaffTorque,
+
+		[GameKey("Item Staff Void")]
+		StaffVoid,
+
+		[GameKey("Item Staff Zero Gravity")]
+		StaffZeroGravity,
+
+		[GameKey("Item Vehicle Semiscooter")]
+		VehicleSemiscooter,
+
+		[GameKey("Item Vehicle Semiscooter Small")]
+		VehicleSemiscooterSmall,
+
+		[GameKey("Item WalkieTalkieBox")]
+		WalkieTalkieBox,
 
 		[GameKey("Item Upgrade Death Head Battery")]
 		UpgradeDeathHeadBattery,

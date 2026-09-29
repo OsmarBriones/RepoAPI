@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,7 +20,7 @@ namespace RepoAPI.Items
 		{
 			// Validate that the provided string maps to a defined ItemName enum member
 			bool isValidItemName = GameKeyEnumExtensions.TryFromGameKey<ItemName>(itemName, out _);
-			if (isValidItemName)
+			if (!isValidItemName)
 			{
 				throw new ArgumentException(nameof(itemName), $"Invalid item name '{itemName}': not a member of ItemName enum.");
 			}

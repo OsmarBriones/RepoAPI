@@ -2,11 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RepoAPI.Game;
 
 namespace RepoAPI.Items
 {
 	/// <summary>
-	/// Provides random selection of <see cref="ItemName"/> keys.
+	/// Provides uniform and weighted random selection of items and keys.
 	/// </summary>
 	public class ItemKeysProvider(Dictionary<ItemName, float>? weights)
 	{
@@ -16,6 +17,26 @@ namespace RepoAPI.Items
 
 		//------------ Weighted
 		private WeightedKeySelector selector = new(weights);
+
+		public ItemKeysProvider(IEnumerable<WeightedKey>? weightedKeys)
+			: this(FromWeightedKeys(weightedKeys))
+		{
+		}
+
+		private static Dictionary<ItemName, float>? FromWeightedKeys(IEnumerable<WeightedKey>? weightedKeys)
+		{
+			if (weightedKeys == null) return null;
+			var dict = new Dictionary<ItemName, float>();
+			foreach (var entry in weightedKeys)
+			{
+				if (entry == null) continue;
+				if (GameKeyEnumExtensions.TryFromGameKey<ItemName>(entry.Key, out var item))
+				{
+					dict[item] = entry.Weight;
+				}
+			}
+			return dict;
+		}
 
 		/// <summary>
 		/// Returns a copy of the current weights.
@@ -80,6 +101,87 @@ namespace RepoAPI.Items
 			{
 				return selector.GetRandomKey(random);
 			}
+		}
+
+		/// <summary>
+		/// Gets the string game key of a randomly selected item using the current weight configuration.
+		/// </summary>
+		public string GetWeightedRandomGameKey()
+		{
+			return GetWeightedRandomKey().GetGameKey();
+		}
+
+		/// <summary>
+		/// Selects a key from a list of weighted keys using weighted random distribution.
+		/// Returns null if weights list is null/empty or total weight is non-positive.
+		/// </summary>
+		public static string? PickWeightedKey(IReadOnlyList<WeightedKey>? weights, Random? rng = null)
+		{
+			if (weights == null || weights.Count == 0) return null;
+
+			float total = 0f;
+			for (int i = 0; i < weights.Count; i++)
+			{
+				var w = weights[i];
+				if (w != null && w.Weight > 0f) total += w.Weight;
+			}
+			if (total <= 0f) return null;
+
+			double roll;
+			if (rng != null)
+			{
+				roll = rng.NextDouble() * total;
+			}
+			else
+			{
+				lock (random)
+				{
+					roll = random.NextDouble() * total;
+				}
+			}
+
+			float accum = 0f;
+			for (int i = 0; i < weights.Count; i++)
+			{
+				var w = weights[i];
+				if (w == null || w.Weight <= 0f) continue;
+				accum += w.Weight;
+				if (roll <= accum)
+				{
+					return w.Key;
+				}
+			}
+
+			for (int i = weights.Count - 1; i >= 0; i--)
+			{
+				var w = weights[i];
+				if (w != null && w.Weight > 0f) return w.Key;
+			}
+			return null;
+		}
+
+		/// <summary>
+		/// Selects a key from an enumerable sequence of weighted keys using weighted random distribution.
+		/// </summary>
+		public static string? PickWeightedKey(IEnumerable<WeightedKey>? weights, Random? rng = null)
+		{
+			if (weights == null) return null;
+			if (weights is IReadOnlyList<WeightedKey> list) return PickWeightedKey(list, rng);
+			return PickWeightedKey(weights.ToList(), rng);
+		}
+
+		/// <summary>
+		/// Selects a key from a dictionary of key-weight pairs using weighted random distribution.
+		/// </summary>
+		public static string? PickWeightedKey(IDictionary<string, float>? weights, Random? rng = null)
+		{
+			if (weights == null || weights.Count == 0) return null;
+			var list = new List<WeightedKey>(weights.Count);
+			foreach (var kvp in weights)
+			{
+				list.Add(new WeightedKey(kvp.Key, kvp.Value));
+			}
+			return PickWeightedKey(list, rng);
 		}
 
 		private class WeightedKeySelector

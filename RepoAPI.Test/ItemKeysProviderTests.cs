@@ -1,3 +1,4 @@
+#nullable enable
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RepoAPI.Items;
 using System;
@@ -11,7 +12,7 @@ namespace RepoAPI.Test
 		[TestMethod]
 		public void GetWeightedRandomKey_WhenWeightsIsNull_Throws()
 		{
-			var provider = new ItemKeysProvider(null);
+			var provider = new ItemKeysProvider((Dictionary<ItemName, float>?)null);
 
 			Assert.ThrowsException<InvalidOperationException>(() => provider.GetWeightedRandomKey());
 		}
@@ -171,6 +172,121 @@ namespace RepoAPI.Test
 			{
 				ItemKeysProvider.AllKeys = original;
 			}
+		}
+
+		[TestMethod]
+		public void WeightedKey_Constructors_SetPropertiesCorrectly()
+		{
+			var fromString = new WeightedKey("Item Gun Shotgun", 5f);
+			Assert.AreEqual("Item Gun Shotgun", fromString.Key);
+			Assert.AreEqual(5f, fromString.Weight);
+
+			var fromEnum = new WeightedKey(ItemName.GunShotgun, 3.5f);
+			Assert.AreEqual("Item Gun Shotgun", fromEnum.Key);
+			Assert.AreEqual(3.5f, fromEnum.Weight);
+
+			var (k, w) = fromString;
+			Assert.AreEqual("Item Gun Shotgun", k);
+			Assert.AreEqual(5f, w);
+		}
+
+		[TestMethod]
+		public void WeightedKey_Constructor_ThrowsOnNullKey()
+		{
+			Assert.ThrowsException<ArgumentNullException>(() => new WeightedKey((string)null!, 1f));
+		}
+
+		[TestMethod]
+		public void PickWeightedKey_WhenListIsNull_ReturnsNull()
+		{
+			Assert.IsNull(ItemKeysProvider.PickWeightedKey((IReadOnlyList<WeightedKey>?)null));
+		}
+
+		[TestMethod]
+		public void PickWeightedKey_WhenListIsEmpty_ReturnsNull()
+		{
+			Assert.IsNull(ItemKeysProvider.PickWeightedKey(Array.Empty<WeightedKey>()));
+		}
+
+		[TestMethod]
+		public void PickWeightedKey_WhenAllWeightsZeroOrNegative_ReturnsNull()
+		{
+			var list = new[]
+			{
+				new WeightedKey("Item A", 0f),
+				new WeightedKey("Item B", -2f),
+			};
+			Assert.IsNull(ItemKeysProvider.PickWeightedKey(list));
+		}
+
+		[TestMethod]
+		public void PickWeightedKey_WhenSinglePositiveWeight_AlwaysReturnsThatKey()
+		{
+			var list = new[]
+			{
+				new WeightedKey("Item Zero", 0f),
+				new WeightedKey("Item Winner", 5f),
+				new WeightedKey("Item Negative", -1f),
+			};
+
+			for (int i = 0; i < 100; i++)
+			{
+				Assert.AreEqual("Item Winner", ItemKeysProvider.PickWeightedKey(list));
+			}
+		}
+
+		[TestMethod]
+		public void PickWeightedKey_WhenMultiplePositiveWeights_SelectsAllOverIterations()
+		{
+			var list = new[]
+			{
+				new WeightedKey("Item Alpha", 1f),
+				new WeightedKey("Item Beta", 1f),
+			};
+
+			bool sawAlpha = false;
+			bool sawBeta = false;
+
+			for (int i = 0; i < 200; i++)
+			{
+				var key = ItemKeysProvider.PickWeightedKey(list);
+				if (key == "Item Alpha") sawAlpha = true;
+				else if (key == "Item Beta") sawBeta = true;
+
+				if (sawAlpha && sawBeta) break;
+			}
+
+			Assert.IsTrue(sawAlpha, "Expected to pick Item Alpha");
+			Assert.IsTrue(sawBeta, "Expected to pick Item Beta");
+		}
+
+		[TestMethod]
+		public void PickWeightedKey_FromDictionary_PicksCorrectly()
+		{
+			var dict = new Dictionary<string, float>
+			{
+				["Key1"] = 10f,
+				["Key2"] = 0f,
+			};
+
+			for (int i = 0; i < 50; i++)
+			{
+				Assert.AreEqual("Key1", ItemKeysProvider.PickWeightedKey(dict));
+			}
+		}
+
+		[TestMethod]
+		public void ItemKeysProvider_FromWeightedKeys_InitializesCorrectly()
+		{
+			var weightedKeys = new[]
+			{
+				new WeightedKey(ItemName.CartCannon, 10f),
+				new WeightedKey("Item Cart Laser", 0f),
+			};
+
+			var provider = new ItemKeysProvider(weightedKeys);
+			Assert.AreEqual(ItemName.CartCannon, provider.GetWeightedRandomKey());
+			Assert.AreEqual("Item Cart Cannon", provider.GetWeightedRandomGameKey());
 		}
 	}
 }

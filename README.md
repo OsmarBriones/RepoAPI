@@ -32,7 +32,7 @@ Modules are folders. Some depend on others — the compiler will error clearly o
 
 | Module | Provides | Depends on |
 |---|---|---|
-| `Items/` | `ItemProvider` (spawning), `ItemKeysProvider` (uniform/weighted random key selection), `ItemName` enum, `Item` | `Game/` |
+| `Items/` | `ItemProvider` (spawning, weighted drops), `ItemKeysProvider` (uniform/weighted random key selection), `WeightedKey` (weight entry), `ItemName` enum, `Item` | `Game/` |
 | `Game/` | `GameKeyAttribute`, `GameKeyEnumExtensions` — reflection helpers mapping enum members to game key strings | — |
 | `ModConfig/` | Generic config binding helpers | `Items/` (→ `Game/`) |
 | `Utils/` | Small shared utilities (`EnumUtils`) | — |
