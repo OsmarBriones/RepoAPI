@@ -1,8 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <!-- Shared TargetFramework/LangVersion/game paths come from Directory.Build.props -->
   <PropertyGroup>
     <RootNamespace>RepoAPI</RootNamespace>
     <AssemblyName>RepoAPI</AssemblyName>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <!-- RepoAPI.Test lives inside this project's own folder; keep it out of RepoAPI's implicit glob -->
@@ -10,6 +11,22 @@
     <Compile Remove="RepoAPI.Test\**" />
     <EmbeddedResource Remove="RepoAPI.Test\**" />
     <None Remove="RepoAPI.Test\**" />
+  </ItemGroup>
+
+  <!-- Add Package Sources -->
+  <PropertyGroup>
+    <RestoreAdditionalProjectSources>
+      https://api.nuget.org/v3/index.json;
+      https://nuget.bepinex.dev/v3/index.json;
+      https://nuget.windows10ce.com/nuget/v3/index.json
+    </RestoreAdditionalProjectSources>
+  </PropertyGroup>
+
+  <!-- Package References -->
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
+    <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.1" PrivateAssets="all" IncludeAssets="build" />
+    <PackageReference Include="BepInEx.Core" Version="5.*" ExcludeAssets="runtime" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +42,7 @@
 
     <Reference Include="Assembly-CSharp">
       <HintPath>$(RepoManaged)\Assembly-CSharp.dll</HintPath>
+      <Publicize>true</Publicize>
       <Private>false</Private>
     </Reference>
 	
