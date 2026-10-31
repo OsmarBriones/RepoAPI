@@ -42,3 +42,13 @@ Modules are folders. Some depend on others — the compiler will error clearly o
 ## Tests
 
 `RepoAPI.Test/` is an MSTest project covering the pieces here in isolation (`dotnet test`).
+
+## Promotion candidates
+
+Logic that currently lives in a mod but could be reused by others. Add a line when a mod keeps something
+generic-looking in its own code; remove it once it moves here. Rule of thumb: if another existing mod could
+call it unchanged, it belongs in RepoAPI.
+
+| Mod | File | What | Why it is still in the mod |
+|-----|------|------|----------------------------|
+| _none recorded_ | | | |
