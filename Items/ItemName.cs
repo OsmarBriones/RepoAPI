@@ -180,6 +180,16 @@ namespace RepoAPI.Items
 
 		[GameKey("Item Valuable Tracker")]
 		ValuableTracker,
+
+		// Added by the Sunstone update; appended at the end so existing numeric values do not shift.
+		[GameKey("Item Gun Revolver")]
+		GunRevolver,
+
+		[GameKey("Item Melee Whip")]
+		MeleeWhip,
+
+		[GameKey("Item Orb Battery")]
+		OrbBattery,
 	}
 }
 
