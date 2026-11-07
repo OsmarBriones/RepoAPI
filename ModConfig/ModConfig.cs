@@ -9,6 +9,24 @@ namespace RepoAPI.ModConfig
 	{
 		public const string DefaultItemWeightsSection = "Item Weights";
 
+		/// <summary>Lowest item weight a player may configure (0 disables the item).</summary>
+		public const int WeightMin = 0;
+
+		/// <summary>Highest item weight a player may configure; the same range the mods that use item weights offer.</summary>
+		public const int WeightMax = 12;
+
+		private static ConfigDescription WeightDescription(ItemName item)
+		{
+			return new ConfigDescription(
+				$"Weight for {item}. Higher = more likely. Use 0 to disable. (range {WeightMin}..{WeightMax})",
+				new AcceptableValueRange<int>(WeightMin, WeightMax));
+		}
+
+		private static int ClampWeight(int weight)
+		{
+			return weight < WeightMin ? WeightMin : weight > WeightMax ? WeightMax : weight;
+		}
+
 		/// <summary>
 		/// Creates a <see cref="ConfigEntry{T}"/> per <see cref="ItemName"/> so players can customize weights.
 		/// </summary>
@@ -29,8 +47,8 @@ namespace RepoAPI.ModConfig
 				entries[item] = config.Bind(
 					section,
 					key,
-					defaultWeight,
-					$"Weight for {item}. Higher = more likely. Use 0 to disable.");
+					ClampWeight(defaultWeight),
+					WeightDescription(item));
 			}
 
 			return entries;
@@ -66,8 +84,8 @@ namespace RepoAPI.ModConfig
 				entries[item] = config.Bind(
 					section,
 					key,
-					defaultWeight,
-					$"Weight for {item}. Higher = more likely. Use 0 to disable.");
+					ClampWeight(defaultWeight),
+					WeightDescription(item));
 			}
 
 			return entries;
